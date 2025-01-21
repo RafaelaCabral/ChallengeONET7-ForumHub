@@ -48,4 +48,22 @@ public class TopicoController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TopicoDTO> atualizar(@PathVariable Long id, @RequestBody Topico topicoAtualizado) {
+        Optional<Topico> topico = topicoRepository.findById(id);
+
+        if (topico.isPresent()) {
+            Topico topicoExistente = topico.get();
+            topicoExistente.setTitulo(topicoAtualizado.getTitulo());
+            topicoExistente.setMensagem(topicoAtualizado.getMensagem());
+            topicoExistente.setEstado(topicoAtualizado.getEstado()); // Atualizando o status
+
+            topicoRepository.save(topicoExistente);
+
+            return ResponseEntity.ok(new TopicoDTO(topicoExistente));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 }
