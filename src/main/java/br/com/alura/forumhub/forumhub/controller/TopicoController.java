@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -38,5 +39,13 @@ public class TopicoController {
         return topicos.stream()
                 .map(TopicoDTO::new) // Converte cada Topico para TopicoDTO
                 .collect(Collectors.toList());
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<Topico> buscarTopicoPorId(@PathVariable Long id) {
+        Optional<Topico> topico = topicoRepository.findById(id);
+        if (topico.isPresent()) {
+            return ResponseEntity.ok(topico.get());
+        }
+        return ResponseEntity.notFound().build();
     }
 }
